@@ -5,6 +5,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Article } from "./entities/article.entity";
 import { In, Repository } from "typeorm";
 import { Tag } from "../tags/entities/tag.entity";
+import { QueryDto } from "./dto/query.dto";
 
 @Injectable()
 export class ArticleService {
@@ -19,6 +20,8 @@ async create(createArticleDto: CreateArticleDto, file: Express.Multer.File, user
         id: In(createArticleDto.tags)
       })
 
+      console.log(tags);
+      
 
       const article = this.articlerepo.create({
         ...createArticleDto,
@@ -33,9 +36,20 @@ async create(createArticleDto: CreateArticleDto, file: Express.Multer.File, user
     }
   }
 
-async findAll(): Promise<Article[]> {
+async findAll(query: QueryDto): Promise<Article[]> {
     try {
-      return await this.articlerepo.find()
+
+      const {page = 1, limit = 10, search} = query
+
+      const createBuilder = await this.articlerepo.createQueryBuilder("article")
+      .leftJoinAndSelect("article.tags", "tags")
+      .leftJoinAndSelect("article.author", "author")
+      .where("article.isActive = :isActive", {isActive: true})
+      .andWhere("article.deletetAt is null")
+
+      return await this.articlerepo.find({
+       relations: ["tags", "author"]
+      })
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }

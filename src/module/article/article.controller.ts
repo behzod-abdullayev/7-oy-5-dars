@@ -10,6 +10,7 @@ import {
   UploadedFile,
   UseGuards,
   Req,
+  Query,
 } from "@nestjs/common";
 import { ArticleService } from "./article.service";
 import { CreateArticleDto } from "./dto/create-article.dto";
@@ -33,6 +34,7 @@ import { AuthGuard } from "src/common/guard/auth.guard";
 import { RolesGuard } from "src/common/guard/roles.guard";
 import { Roles } from "src/common/decorators/roles.decorator";
 import { UserRole } from "src/shared/constants/user.role";
+import { QueryDto } from "./dto/query.dto";
 
 @ApiBearerAuth("JWT-auth")
 @UseGuards(AuthGuard)
@@ -68,8 +70,8 @@ export class ArticleController {
   @ApiOperation({ description: "get all articles api (public)" })
   @ApiOkResponse({ description: "list of articles" })
   @Get()
-  findAll() {
-    return this.articleService.findAll();
+  findAll(@Query() query: QueryDto) {
+    return this.articleService.findAll(query);
   }
 
   @UseGuards(RolesGuard)

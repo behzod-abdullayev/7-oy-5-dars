@@ -3,7 +3,6 @@ import { Article } from "src/module/article/entities/article.entity";
 import { Auth } from "src/module/auth/entities/auth.entity";
 import { Column, Entity, JoinColumn, ManyToMany, ManyToOne } from "typeorm";
 
-@Entity({name: "tags"})
 
 @Entity({ name: "tags" })
 export class Tag extends BaseEntity {
