@@ -19,14 +19,14 @@ async create(createArticleDto: CreateArticleDto, file: Express.Multer.File) {
         id: In(createArticleDto.tags)
       })
 
-      console.log(tags);
-      
 
-      // const article = this.articlerepo.create()
+      const article = this.articlerepo.create({
+        ...createArticleDto,
+        tags
+      })
 
-      // article.backgroundImage = `http://localhost:4001/uploads/${file.filename}`
-
-      // return await this.articlerepo.save(article)
+      article.backgroundImage = `http://localhost:4001/uploads/${file.filename}`
+      return await this.articlerepo.save(article)
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
