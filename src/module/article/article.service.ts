@@ -43,7 +43,9 @@ async findAll(): Promise<Article[]> {
 
   async findAllMyArticles(userId): Promise<Article[]> {
     try {
-      return await this.articlerepo.find({where: {author: userId}})
+
+      const articles = await this.articlerepo.find({where: {author: userId}, relations: ["tags", "author"]})
+      return articles
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
@@ -73,13 +75,13 @@ async findAll(): Promise<Article[]> {
   //   }
   // }
 
-  async remove(id: number):  Promise<{message: string}> {
+  async remove(id: number, userId):  Promise<{message: string}> {
     try {
             const foundArticle = await this.articlerepo.findOne({where: {id}})
 
       if(!foundArticle) throw new NotFoundException("article not found")
 
-        await this.articlerepo.delete(foundArticle.id)
+        await this.articlerepo.softDelete(foundArticle.id)
         return {message: "article deleted"}
     } catch (error) {
       throw new InternalServerErrorException(error.message);

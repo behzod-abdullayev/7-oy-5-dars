@@ -101,12 +101,12 @@ export class ArticleController {
   // }
 
   @UseGuards(RolesGuard)
-  @Roles(UserRole.ADMIN, UserRole.SUPERADMIN)
+  @Roles(UserRole.ADMIN, UserRole.USER,  UserRole.SUPERADMIN)
   @ApiOperation({ description: "delete article api (owner)" })
   @ApiOkResponse({ description: "deleted article" })
   @ApiNotFoundResponse({ description: "article not found" })
   @Delete(":id")
-  remove(@Param("id") id: string) {
-    return this.articleService.remove(+id);
+  remove(@Param("id") id: string, @Req() req) {
+    return this.articleService.remove(+id, req.user.id);
   }
 }
