@@ -72,6 +72,15 @@ export class ArticleController {
     return this.articleService.findAll();
   }
 
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.USER, UserRole.SUPERADMIN)
+  @ApiOperation({ description: "get all my articles api (owner)" })
+  @ApiOkResponse({ description: "list of articles" })
+  @Get("my-articles")
+  findAllMyArticles(@Req() req) {
+    return this.articleService.findAllMyArticles(req.user.id);
+  }
+
   @ApiOperation({ description: "get one article api (public)" })
   @ApiNotFoundResponse({ description: "article not found" })
   @ApiOkResponse({ description: "get one article" })

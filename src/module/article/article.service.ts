@@ -12,7 +12,7 @@ export class ArticleService {
     @InjectRepository(Article) private articlerepo: Repository<Article>,
     @InjectRepository(Tag) private tagrepo: Repository<Tag>
 ) {}
-async create(createArticleDto: CreateArticleDto, file: Express.Multer.File, userId) {
+async create(createArticleDto: CreateArticleDto, file: Express.Multer.File, userId: any): Promise<Article> {
     try {
 
       const tags = await this.tagrepo.findBy({
@@ -33,9 +33,17 @@ async create(createArticleDto: CreateArticleDto, file: Express.Multer.File, user
     }
   }
 
-  async findAll(): Promise<Article[]> {
+async findAll(): Promise<Article[]> {
     try {
       return await this.articlerepo.find()
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
+    }
+  }
+
+  async findAllMyArticles(userId): Promise<Article[]> {
+    try {
+      return await this.articlerepo.find({where: {author: userId}})
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
