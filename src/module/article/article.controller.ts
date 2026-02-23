@@ -9,6 +9,7 @@ import {
   UseInterceptors,
   UploadedFile,
   UseGuards,
+  Req,
 } from "@nestjs/common";
 import { ArticleService } from "./article.service";
 import { CreateArticleDto } from "./dto/create-article.dto";
@@ -60,8 +61,8 @@ export class ArticleController {
     }),
   )
   @Post()
-  create(@Body() createArticleDto: CreateArticleDto, @UploadedFile() file: Express.Multer.File) {
-    return this.articleService.create(createArticleDto, file);
+  create(@Body() createArticleDto: CreateArticleDto, @UploadedFile() file: Express.Multer.File, @Req() req) {
+    return this.articleService.create(createArticleDto, file, req.user.id);
   }
 
   @ApiOperation({ description: "get all articles api (public)" })

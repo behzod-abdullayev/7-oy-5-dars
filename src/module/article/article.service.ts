@@ -12,7 +12,7 @@ export class ArticleService {
     @InjectRepository(Article) private articlerepo: Repository<Article>,
     @InjectRepository(Tag) private tagrepo: Repository<Tag>
 ) {}
-async create(createArticleDto: CreateArticleDto, file: Express.Multer.File) {
+async create(createArticleDto: CreateArticleDto, file: Express.Multer.File, userId) {
     try {
 
       const tags = await this.tagrepo.findBy({
@@ -22,7 +22,8 @@ async create(createArticleDto: CreateArticleDto, file: Express.Multer.File) {
 
       const article = this.articlerepo.create({
         ...createArticleDto,
-        tags
+        tags,
+        author: userId
       })
 
       article.backgroundImage = `http://localhost:4001/uploads/${file.filename}`
